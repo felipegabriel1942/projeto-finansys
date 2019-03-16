@@ -12,7 +12,7 @@ import { Categoria } from './categoria.model';
 })
 export class CategoriaService {
 
-  private apiPath: 'api/categorias';
+  private apiPath: string = 'api/categorias';
 
   constructor(private http: HttpClient) { }
 
