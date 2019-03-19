@@ -57,12 +57,16 @@ export class EntradaService {
   // metodos privados
   private jsonDataToEntradas(jsonData: any[]): Entrada[] {
     const entradas: Entrada[] = [];
-    jsonData.forEach(element => entradas.push(element as Entrada));
+    jsonData.forEach(element => {
+      const entrada = Object.assign(new Entrada(), element);
+      entradas.push(entrada);
+    });
+
     return entradas;
   }
 
   private jsonDataToEntrada(jsonData: any): Entrada {
-    return jsonData as Entrada;
+    return Object.assign(new Entrada(), jsonData);
   }
 
   private handleError(error: any): Observable<any> {
