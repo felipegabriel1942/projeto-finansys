@@ -3,11 +3,13 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { Entrada } from '../compartilhada/entrada.model';
+import { Categoria } from '../../categorias/compartilhada/categoria.model';
 import { EntradaService } from '../compartilhada/entrada.service';
 
 import { switchMap } from 'rxjs/operators';
-
 import toastr from 'toastr';
+import { CategoriaService } from '../../categorias/compartilhada/categoria.service';
+
 
 
 @Component({
@@ -23,6 +25,7 @@ export class FormularioEntradasComponent implements OnInit, AfterContentChecked 
   serverErrorMessages: string[] = null;
   submittingForm: boolean = false;
   entrada: Entrada = new Entrada();
+  categorias: Array<Categoria>;
 
   imaskConfig = {
     mask: Number,
@@ -43,10 +46,22 @@ export class FormularioEntradasComponent implements OnInit, AfterContentChecked 
     today: 'Hoje',
     clear: 'Limpar',
     dateFormat: 'mm/dd/yy'
+  };
+
+  get tipoOpcoes(): Array<any> {
+    return Object.entries(Entrada.tipos).map(
+      ([valor, texto]) => {
+        return {
+          texto: texto,
+          valor: valor
+        };
+      }
+    );
   }
 
   constructor(
     private entradaService: EntradaService,
+    private categoriaService: CategoriaService,
     private route: ActivatedRoute,
     private router: Router,
     private formBuilder: FormBuilder
@@ -56,6 +71,7 @@ export class FormularioEntradasComponent implements OnInit, AfterContentChecked 
     this.setCurrentAction();
     this.buildEntradaForm();
     this.loadEntrada();
+    this.loadCategorias();
   }
 
   ngAfterContentChecked() {
@@ -84,10 +100,10 @@ export class FormularioEntradasComponent implements OnInit, AfterContentChecked 
       id: [null],
       nome: [null, [Validators.required, Validators.minLength(2)]],
       descricao: [null],
-      tipo: [null, [Validators.required]],
+      tipo: ['despesa', [Validators.required]],
       valor: [null, [Validators.required]],
       data: [null, [Validators.required]],
-      pago: [null, [Validators.required]],
+      pago: [true, [Validators.required]],
       categoriaId: [null, [Validators.required]],
     });
   }
@@ -104,6 +120,12 @@ export class FormularioEntradasComponent implements OnInit, AfterContentChecked 
         (error) => alert('Ocorreu um erro no servidor, tente mais tarde.')
       );
     }
+  }
+
+  private loadCategorias() {
+    this.categoriaService.getAll().subscribe(
+      categorias => this.categorias = categorias
+    );
   }
 
   private setPageTitle() {
@@ -138,8 +160,8 @@ export class FormularioEntradasComponent implements OnInit, AfterContentChecked 
     toastr.success('Solicitação processada com sucesso!');
 
     // Direciona a pagina de entrada e o skip não guarda no historico do navegador
-    this.router.navigateByUrl('entradas', {skipLocationChange: true}).then(
-      () => this.router.navigate(['entradas', entrada.id, 'editar'])
+    this.router.navigateByUrl('lancamentos', {skipLocationChange: true}).then(
+      () => this.router.navigate(['lancamentos', entrada.id, 'editar'])
     );
   }
 

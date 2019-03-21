@@ -36,8 +36,7 @@
          <div class="form-group col-md-2">
           <label for="tipo">Tipo</label>
           <select name="tipo" id="tipo" formControlName="tipo" class="form-control">
-            <option value="Despesa">Despesa</option>
-            <option value="Receita">Receita</option>
+            <option *ngFor="let opcao of tipoOpcoes" [value]="opcao.valor">{{ opcao.texto }}</option>
           </select>
           <div class="text-danger" *ngIf="entradaForm.get('tipo').invalid && entradaForm.get('tipo').touched">
             <div *ngIf="entradaForm.get('tipo').errors.required">Dado obrigatório</div>
@@ -108,6 +107,17 @@
             <div *ngIf="entradaForm.get('pago').errors.required">Dado obrigatório</div>
           </div>
       </div>
+
+      <!-- categoriaId -->
+      <div class="form-group col-md-2">
+        <label for="categoriaId">Categoria</label>
+        <select name="categoriaId" id="categoriaId" formControlName="categoriaId" class="form-control">
+          <option *ngFor="let categoria of categorias" [value]="categoria.id">{{categoria.nome}}</option>
+        </select>
+        <div class="text-danger" *ngIf="entradaForm.get('categoriaId').invalid && entradaForm.get('categoriaId').touched">
+          <div *ngIf="entradaForm.get('categoriaId').errors.required">Dado obrigatório</div>
+        </div>
+      </div>
       <div class="form-group col-md-8">
         <label for="descricao">Descrição</label>
         <input type="text" class="form-control" id="descricao" formControlName="descricao">
@@ -118,7 +128,7 @@
 
   <div class="alert alert-danger mt-4" *ngIf="serverErrorMessages">
     <strong>Erro no servidor:</strong>
-    <ul>
+    <ul>  
       <li *ngFor="let error of serverErrorMessages">{{error}}</li>
     </ul>
   </div>

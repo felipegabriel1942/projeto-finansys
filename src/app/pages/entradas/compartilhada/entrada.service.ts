@@ -5,6 +5,7 @@ import { Observable, throwError } from 'rxjs';
 import { map, catchError, flatMap } from 'rxjs/operators';
 
 import { Entrada } from './entrada.model';
+import { CategoriaService } from '../../categorias/compartilhada/categoria.service';
 
 
 @Injectable({
@@ -14,7 +15,8 @@ export class EntradaService {
 
   private apiPath: string = 'api/entradas';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private categoriaService: CategoriaService) { }
 
   getAll(): Observable<Entrada[]> {
     return this.http.get(this.apiPath).pipe(
@@ -32,17 +34,33 @@ export class EntradaService {
   }
 
   create(entrada: Entrada): Observable<Entrada> {
-    return this.http.post(this.apiPath, entrada).pipe(
-      catchError(this.handleError),
-      map(this.jsonDataToEntrada)
+
+    return this.categoriaService.getById(entrada.categoriaId).pipe(
+     flatMap(categoria => {
+      entrada.categoria = categoria;
+
+      // FlatMap utilizado para agregar observables
+      // Provavelmente só utilizado porcausa do in-memory-database-api
+      return this.http.post(this.apiPath, entrada).pipe(
+        catchError(this.handleError),
+        map(this.jsonDataToEntrada)
+      );
+     })
     );
   }
 
   update(entrada: Entrada): Observable<Entrada> {
     const url = `${this.apiPath}/${entrada.id}`;
-    return this.http.put(url, entrada).pipe(
-      catchError(this.handleError),
-      map(() => entrada)
+
+    return this.categoriaService.getById(entrada.categoriaId).pipe(
+      flatMap(categoria => {
+        entrada.categoria = categoria;
+
+        return this.http.put(url, entrada).pipe(
+          catchError(this.handleError),
+          map(() => entrada)
+        );
+      })
     );
   }
 
