@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../../shared/shared.module';
 
 import { EntradasRoutingModule } from './entradas-routing.module';
 import { ListaEntradasComponent } from './lista-entradas/lista-entradas.component';
@@ -15,11 +14,10 @@ import { IMaskModule } from 'angular-imask';
     FormularioEntradasComponent,
   ],
   imports: [
-    CommonModule,
     EntradasRoutingModule,
-    ReactiveFormsModule,
     CalendarModule,
-    IMaskModule
+    IMaskModule,
+    SharedModule
   ]
 })
 export class EntradasModule { }
