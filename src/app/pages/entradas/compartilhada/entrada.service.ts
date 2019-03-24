@@ -1,94 +1,41 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable, Injector } from '@angular/core';
 
-import { Observable, throwError } from 'rxjs';
-import { map, catchError, flatMap } from 'rxjs/operators';
 
 import { Entrada } from './entrada.model';
 import { CategoriaService } from '../../categorias/compartilhada/categoria.service';
+import { BaseResourceService } from '../../../shared/servicos/base-resource.service';
+
+import { flatMap, catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class EntradaService {
+export class EntradaService extends BaseResourceService<Entrada> {
 
-  private apiPath: string = 'api/entradas';
-
-  constructor(private http: HttpClient,
-              private categoriaService: CategoriaService) { }
-
-  getAll(): Observable<Entrada[]> {
-    return this.http.get(this.apiPath).pipe(
-      catchError(this.handleError),
-      map(this.jsonDataToEntradas)
-    );
-  }
-
-  getById(id: number): Observable<Entrada> {
-    const url = `${this.apiPath}/${id}`;
-    return this.http.get(url).pipe(
-      catchError(this.handleError),
-      map(this.jsonDataToEntrada)
-    );
+  constructor(protected injector: Injector,
+              private categoriaService: CategoriaService) {
+    super('api/entradas', injector, Entrada.fromJson);
   }
 
   create(entrada: Entrada): Observable<Entrada> {
-
-    return this.categoriaService.getById(entrada.categoriaId).pipe(
-     flatMap(categoria => {
-      entrada.categoria = categoria;
-
-      // FlatMap utilizado para agregar observables
-      // Provavelmente só utilizado porcausa do in-memory-database-api
-      return this.http.post(this.apiPath, entrada).pipe(
-        catchError(this.handleError),
-        map(this.jsonDataToEntrada)
-      );
-     })
-    );
+    return this.setCategoriaAndSendToService(entrada, super.create.bind(this));
   }
 
   update(entrada: Entrada): Observable<Entrada> {
-    const url = `${this.apiPath}/${entrada.id}`;
+    return this.setCategoriaAndSendToService(entrada, super.update.bind(this));
+  }
 
+  private setCategoriaAndSendToService(entrada: Entrada, sendFn: any): Observable<Entrada> {
+    // FlatMap utilizado para agregar observables
+    // Provavelmente só utilizado porcausa do in-memory-database-api
     return this.categoriaService.getById(entrada.categoriaId).pipe(
       flatMap(categoria => {
-        entrada.categoria = categoria;
-
-        return this.http.put(url, entrada).pipe(
-          catchError(this.handleError),
-          map(() => entrada)
-        );
-      })
-    );
-  }
-
-  delete(id: number): Observable<any> {
-    const url = `${this.apiPath}/${id}`;
-    return this.http.delete(url).pipe(
-      catchError(this.handleError),
-      map(() => null)
-    );
-  }
-
-  // metodos privados
-  private jsonDataToEntradas(jsonData: any[]): Entrada[] {
-    const entradas: Entrada[] = [];
-    jsonData.forEach(element => {
-      const entrada = Object.assign(new Entrada(), element);
-      entradas.push(entrada);
-    });
-
-    return entradas;
-  }
-
-  private jsonDataToEntrada(jsonData: any): Entrada {
-    return Object.assign(new Entrada(), jsonData);
-  }
-
-  private handleError(error: any): Observable<any> {
-    console.log('ERRO NA REQUISIÇÃO =>', error);
-    return throwError(error);
+       entrada.categoria = categoria;
+       return sendFn(entrada);
+      }),
+      catchError(this.handleError)
+     );
   }
 }

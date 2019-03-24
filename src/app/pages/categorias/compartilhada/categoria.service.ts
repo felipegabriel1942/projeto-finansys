@@ -12,6 +12,6 @@ import { BaseResourceService } from '../../../shared/servicos/base-resource.serv
 export class CategoriaService extends BaseResourceService<Categoria> {
 
   constructor(protected injector: Injector) {
-    super('api/categorias', injector);
+    super('api/categorias', injector, Categoria.fromJson);
    }
 }

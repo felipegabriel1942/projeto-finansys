@@ -1,7 +1,7 @@
 import { Categoria } from '../../categorias/compartilhada/categoria.model';
 import { BaseResourceModel } from '../../../shared/models/base-resource.model';
 
-export class Entrada extends BaseResourceModel{
+export class Entrada extends BaseResourceModel {
     constructor(
         public id?: number,
         public nome?: string,
@@ -20,6 +20,10 @@ export class Entrada extends BaseResourceModel{
         despesa: 'Despesa',
         receita: 'Receita'
     };
+
+    static fromJson(jsonData: any): Entrada {
+        return Object.assign(new Entrada(), jsonData);
+    }
 
     get paidText(): string {
         return this.pago ? 'Pago' : 'Pendente';

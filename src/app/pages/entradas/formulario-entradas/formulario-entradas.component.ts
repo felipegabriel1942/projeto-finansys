@@ -138,7 +138,7 @@ export class FormularioEntradasComponent implements OnInit, AfterContentChecked 
   }
 
   private createEntrada() {
-    const entrada: Entrada = Object.assign(new Entrada(), this.entradaForm.value);
+    const entrada: Entrada = Entrada.fromJson(this.entradaForm.value);
 
     this.entradaService.create(entrada).subscribe(
       entrada => this.actionsForSuccess(entrada),
@@ -147,7 +147,7 @@ export class FormularioEntradasComponent implements OnInit, AfterContentChecked 
   }
 
   private updateEntrada() {
-    const entrada: Entrada = Object.assign(new Entrada(), this.entradaForm.value);
+    const entrada: Entrada = Entrada.fromJson(this.entradaForm.value);
 
     this.entradaService.update(entrada).subscribe(
       entrada => this.actionsForSuccess(entrada),
