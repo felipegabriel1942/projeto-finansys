@@ -34,7 +34,7 @@
       </div>
       <div class="form-group col-md-5">
         <label for="ano">Ano</label>
-        <select #mes name="ano" id="ano" class="form-control">
+        <select #ano name="ano" id="ano" class="form-control">
           <option value="">Selecione um ano</option>
           <option value="2016">2016</option>
           <option value="2017">2017</option>
@@ -62,7 +62,7 @@
     </div>
     <div class="card-body">
       <h3 class="card-title">
-        1500
+        {{totalReceitas}}
       </h3>
     </div>
   </div>
@@ -73,7 +73,7 @@
     </div>
     <div class="card-body">
       <h3 class="card-title">
-        500
+        {{totalDespesas}}
       </h3>
     </div>
   </div>
@@ -84,7 +84,7 @@
     </div>
     <div class="card-body">
       <h3 class="card-title">
-        1000
+        {{saldo}}
       </h3>
     </div>
   </div>
@@ -94,11 +94,11 @@
 
 <div class="row mt-5 mb-4">
   <div class="col-md-6">
-    GRÁFICO DE RECEITAS
+    <p-chart type="bar" [data]="receitaChartData" [options]="chartOptions"></p-chart>
   </div>
 
   <div class="col-md-6">
-    GRÁFICO DE DESPESAS
+    <p-chart type="bar" [data]="despesaChartData" [options]="chartOptions"></p-chart>
   </div>
 </div>
 

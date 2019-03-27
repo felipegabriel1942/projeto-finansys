@@ -7,9 +7,10 @@ import { BreadCrumbComponent } from './componentes/bread-crumb/bread-crumb.compo
 import { PageHeaderComponent } from './componentes/page-header/page-header.component';
 import { FormFieldErrorComponent } from './componentes/form-field-error/form-field-error.component';
 import { ServerErrorMessagesComponent } from './componentes/server-error-messages/server-error-messages.component';
+import { CardDeckReportComponent } from './componentes/card-deck-report/card-deck-report.component';
 
 @NgModule({
-  declarations: [BreadCrumbComponent, PageHeaderComponent, FormFieldErrorComponent, ServerErrorMessagesComponent],
+  declarations: [BreadCrumbComponent, PageHeaderComponent, FormFieldErrorComponent, ServerErrorMessagesComponent, CardDeckReportComponent],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -22,7 +23,8 @@ import { ServerErrorMessagesComponent } from './componentes/server-error-message
     BreadCrumbComponent,
     PageHeaderComponent,
     FormFieldErrorComponent,
-    ServerErrorMessagesComponent
+    ServerErrorMessagesComponent,
+    CardDeckReportComponent
   ]
 })
 export class SharedModule { }
