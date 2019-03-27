@@ -9,6 +9,7 @@ export class PageHeaderComponent implements OnInit {
 
   // page-title' nomenclatura do input para ser utilizado no HTML
   @Input('page-title') pageTitle: string;
+  @Input('show-button') showButton: boolean = true;
   @Input('button-class') buttonClass: string;
   @Input('button-text') buttonText: string;
   @Input('button-link') buttonLink: string;
